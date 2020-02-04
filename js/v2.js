@@ -20,22 +20,22 @@ require([
     /***************************************/
     /*Create Renderer for the Census Tracts*/
     /***************************************/
-    var countyRenderer = {
+    var hexRenderer = {
         type: 'simple',
         symbol: {
           type: 'simple-fill',
           color: [0,0,0,0],
           outline: {
-            color: [50,50,50, 0.7],
+            color: [50,50,50, 0.3],
             width: 0.5
           }
         }
     };
 
-    var county = new FeatureLayer({
-        url: 'https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_ACS_5Yr_Tracts/MapServer/0',
-        title: 'Census Tracts',
-        renderer: countyRenderer,
+    var hex = new FeatureLayer({
+        url: 'https://gis.h-gac.com/arcgis/rest/services/Forecast/H3M/MapServer/0',
+        title: '3 Sq. Mile Hexagons',
+        renderer: hexRenderer,
         legendEnabled: false
     });
     
@@ -44,7 +44,7 @@ require([
     /**********************************/
     const map = new Map({
         basemap: "streets-navigation-vector",
-        layers: [layer, county, homeGraphicLayer, workGraphicLayer]
+        layers: [layer, hex, homeGraphicLayer, workGraphicLayer]
     });
 
     const view = new MapView({
@@ -53,6 +53,13 @@ require([
         center: [-95.444, 29.756],
         zoom: 8
     });
+
+    //JavaScript Object that holds the final Census Tract
+    //information for both the Home and Work polygons
+    var test = [
+        {type: "Home", hexID:0123},
+        {type: "Work", hexID:4567}
+    ];
 
     /******************************/
     /*Add the simple Sketch Widget*/
@@ -66,26 +73,26 @@ require([
         //When the sketch state is considered complete
         if (event.state === "complete"){
             //Query the Census Tracts based on the drawn geometry
-            var query = county.createQuery();
+            var query = hex.createQuery();
             query.geometry = event.graphic.geometry;
-            query.outFields = ["Tract"];
+            query.outFields = ["ID"];
 
-            var tractID = "";
-            county.queryFeatures(query)
+            var hexID = "";
+            hex.queryFeatures(query)
                 .then(function(response){
                     //Loop through all the Census Tracts and
-                    //Add the Tract number and a comma to the string
+                    //Add the Hex number and a comma to the string
                     for (var i = 0; i < response.features.length; i++){
-                        tractID += response.features[i].attributes.Tract + ",";
+                        hexID += response.features[i].attributes.ID + ",";
                     }
 
                     //Once all the Tract number are stored, remove the trailing comma
-                    var finalTracts = tractID.slice(0, tractID.length - 1);
-                    console.log(finalTracts);
+                    var finalHex = hexID.slice(0, hexID.length - 1);
+                    console.log(finalHex);
 
                     //Create attributes for the graphic
-                    var tractAtts = {
-                        "censusTracts": finalTracts,
+                    var hexAtts = {
+                        "hexID": finalHex,
                         "type": "home"
                     };
 
@@ -103,7 +110,7 @@ require([
                     //Create the new graphic
                     var newGraphic = new Graphic({
                         geometry: event.graphic.geometry,
-                        attributes: tractAtts,
+                        attributes: hexAtts,
                         symbol: polySymbol
                     });
 
@@ -111,6 +118,14 @@ require([
                     //Delete the extra graphic layer from the map
                     homeGraphicLayer.add(newGraphic);
                     layer.removeAll();
+
+                    //Add the data to the URL
+                    updateFinalURL("Home", finalHex);
+
+                    //Update the anchor element with a custom URL
+                    var aTag = document.getElementById("homeTracts");
+                    aTag.setAttribute("href", "https://public.tableau.com/views/hex_3m_LEHD/CommutePattern?:display_count=y&&:showVizHome=no&Home=" + finalHex);
+                    aTag.innerText = "View Home Commute Patterns";
                 })
         }
     });
@@ -148,22 +163,22 @@ require([
 
     sketchWork.on("create", function(event){
         if (event.state === "complete"){
-            var query = county.createQuery();
+            var query = hex.createQuery();
             query.geometry = event.graphic.geometry;
-            query.outFields = ["Tract"];
+            query.outFields = ["ID"];
 
-            var tractID = "";
-            county.queryFeatures(query)
+            var hexID = "";
+            hex.queryFeatures(query)
                 .then(function(response){
                     for (var i = 0; i < response.features.length; i++){
-                        tractID += response.features[i].attributes.Tract + ",";
+                        hexID += response.features[i].attributes.ID + ",";
                     }
 
-                    var finalTracts = tractID.slice(0, tractID.length - 1);
-                    console.log(finalTracts);
+                    var finalHex = hexID.slice(0, hexID.length - 1);
+                    console.log(finalHex);
 
                     var tractAtts = {
-                        "censusTracts": finalTracts,
+                        "censusTracts": finalHex,
                         "type": "work"
                     };
 
@@ -185,6 +200,12 @@ require([
 
                     workGraphicLayer.add(newGraphic);
                     layer.removeAll();
+
+                    updateFinalURL("Work", finalHex);
+    
+                    var aTag = document.getElementById("workTracts");
+                    aTag.setAttribute("href", "https://public.tableau.com/views/hex_3m_LEHD/CommutePattern?:display_count=y&&:showVizHome=no&Workplace=" + finalHex);
+                    aTag.innerText = "View Work Commute Patterns";
                 })
         }
     });
@@ -257,110 +278,31 @@ require([
             document.getElementById("helpInfo").style.display = "block";
         });
     });
-    
-    //JavaScript Object that holds the final Census Tract
-    //information for both the Home and Work polygons
-    var test = [
-        {type: "Home", tracts:0123},
-        {type: "Work", tracts:4567}
-    ];
 
     /**************************************************/
     /*Create actions when the Select button is clicked*/
     /**************************************************/
-    var selection = document.getElementById("selectButton");
-    selection.onclick = function(){
-        clickHomeGraphic(view);
-    };
-
-    var workSelection = document.getElementById("workSelectButton");
-    workSelection.onclick = function(){
-        clickWorkGraphic(view);
-    };
-
     var linkButton = document.getElementById("finalURL");
     linkButton.onclick = function(){
         extendedLink();
     };
 
-    function clickHomeGraphic(view){
-        //Main logic rungs when the view is clicked
-        view.on("click", function(event){
-            event.stopPropagation();
-            //Use hitTest to see if the user clicked on a polygon
-            view.hitTest(event).then(function(response){
-                var ct = [];
-
-                //If click returned a result
-                if (response.results.length){
-
-                    //Filter the result based on the home graphic layer
-                    var graphic = response.results.filter(function(result){
-                        return result.graphic.layer === homeGraphicLayer;
-                    })[0].graphic;
-
-                    ct.push(graphic.attributes.censusTracts);
-
-                    //Create an object and call function to update the final object
-                    var homeResults = {type:"Home", tracts:graphic.attributes.censusTracts};
-                    updateFinalURL("Home", graphic.attributes.censusTracts);
-                    console.log(test);
-                    // if (test.length < 1){
-                    //     test.push(homeResults);
-                    // } else{
-                    //     updateFinalURL("Home", graphic.attributes.censusTracts);
-                    //     console.log(test);
-                    // }
-    
-                    //Update the anchor element with a custom URL
-                    var aTag = document.getElementById("homeTracts");
-                    aTag.setAttribute("href", "https://public.tableau.com/views/CommutePatterns_Tracts/CommutePattern?:display_count=y&&:showVizHome=no&Home=" + ct[0]);
-                    aTag.innerText = "View Home Commute Patterns";
-                }
-            });
-        });
-    }
-
-    //Same as the clickHomeGraphic function
-    function clickWorkGraphic(view){
-        view.on("click", function(event){
-            event.stopPropagation();
-            view.hitTest(event).then(function(response){
-                var ct = [];
-                if (response.results.length){
-                    var graphic = response.results.filter(function(result){
-                        return result.graphic.layer === workGraphicLayer;
-                    })[0].graphic;
-
-                    ct.push(graphic.attributes.censusTracts);
-                    var workResults = {type:"Work", tracts:graphic.attributes.censusTracts};
-                    updateFinalURL("Work", graphic.attributes.censusTracts);
-                    console.log(test);
-    
-                    var aTag = document.getElementById("workTracts");
-                    aTag.setAttribute("href", "https://public.tableau.com/views/CommutePatterns_Tracts/CommutePattern?:display_count=y&&:showVizHome=no&Workplace=" + ct[0]);
-                    aTag.innerText = "View Work Commute Patterns";
-                }
-            });
-        });
-    }
-
     //Function to update the final URL
-    function updateFinalURL(type, tracts){
+    function updateFinalURL(type, hexID){
         //Loop through the objects
         for (var i = 0; i < test.length; i++){
             //If the object matches the type
             //Update the Tract numbers with the new Tract numbers
             if (test[i].type === type){
-                test[i].tracts = tracts;
+                test[i].hexID = hexID;
                 break;
             }
         }
         
-    }
+    };
 
     //When a user clicks a button, open a new tab to with the new custom URL
     function extendedLink(){
-        window.open("https://public.tableau.com/views/CommutePatterns_Tracts/CommutePattern?:display_count=y&&:showVizHome=no&Home="+test[0].tracts+"&Workplace="+test[1].tracts);
-    }
+        window.open("https://public.tableau.com/views/hex_3m_LEHD/CommutePattern?:display_count=y&&:showVizHome=no&Home="+test[0].hexID+"&Workplace="+test[1].hexID);
+    };
 });
