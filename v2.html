@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width">
+		<title>Commute Patterns</title>
+
+		<!--put your external stylesheet links here-->
+		<link rel="stylesheet" href="https://js.arcgis.com/4.13/esri/themes/light/main.css">
+		<link rel="stylesheet" href="css/v2.css">
+		<link rel="stylesheet" href="css/jquery-ui.css">
+		<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+		<!--[if IE<9]>
+			<link rel="stylesheet" href="css/style.ie.css">
+		<![endif]-->
+	</head>
+
+	<body>
+		<!--put your initial page content here-->
+			
+		<!--you can also use this space for internal scripts or stylesheets;
+		place these within <script> or <style> tags-->
+		<div id="viewDiv">
+			<div id="helpInfo">
+				<h3>Application Help</h3>
+				<span>Click <button class="action-button2 esri-icon-edit"></button> to
+					start drawing home and/or work polygons.
+				</span><br/><br/>
+				<span>After drawing your polygons, click <button class="action-button2 esri-icon-link"></button>
+					 <br/>to view the unique URLs.
+				</span>
+			</div>
+			<div id="drawPolys">
+				<span>Click on a button to draw a custom home/work polygon.</span><br/><br/>
+				<span>Home Polygon:</span><br/>
+				<div id="topbar">
+					<button class="action-button esri-icon-polygon" id="homePolygonButton" type="button"
+					  title="Draw polygon"></button>
+					<button class="action-button esri-icon-checkbox-unchecked" id="homeRectangleButton"
+					  type="button" title="Draw rectangle"></button>
+					<button class="action-button esri-icon-radio-unchecked" id="homeCircleButton"
+					  type="button" title="Draw circle"></button>
+					<button class="action-button esri-icon-trash" id="homeResetBtn" type="button"
+					  title="Clear drawings"></button>
+				</div><br/>
+				<span>Work Polygon:</span><br/>
+				<div id="topbar">
+					<button class="action-button esri-icon-polygon" id="workPolygonButton" type="button"
+					  title="Draw polygon"></button>
+					<button class="action-button esri-icon-checkbox-unchecked" id="workRectangleButton"
+					  type="button" title="Draw rectangle"></button>
+					<button class="action-button esri-icon-radio-unchecked" id="workCircleButton"
+					  type="button" title="Draw circle"></button>
+					<button class="action-button esri-icon-trash" id="workResetBtn" type="button"
+					  title="Clear drawings"></button>
+				</div>
+			</div>
+			<div id="urlContent">
+				<span>Click <button class="action-button2 esri-icon-cursor"></button>
+					to select a home or work polygon. When you select a polygon, a link
+					will display that contains the Census Tracts of the selected polygon.
+				</span><br/><br/>
+				<span>If you've selected a home and work polygon, click the button at the bottom
+					to see the information using the selected polygons.
+				</span><br/><br/>
+				<span>Home Polygon: </span><a target="_blank" id="homeTracts"></a>
+				<button class='selection-button esri-icon-cursor' id='selectButton' type='button' title='Select polygon'></button><br/><br/>
+				<span>Work Polygon: </span><a target="_blank" id="workTracts"></a>
+				<button class='selection-button esri-icon-cursor' id='workSelectButton' type='button' title='Select polygon'></button><br/><br/>
+				<button class="esri-icon-launch-link-external" id="finalURL" type="button"> Click for Home to Work</button>
+			</div>
+        </div>
+		<!--put your external script links here-->
+		<script type="text/javascript" src="js/jquery-3.3.1.js"></script>
+		<script type="text/javascript" src="js/jquery-ui.js"></script>
+		<script src="https://js.arcgis.com/4.13/"></script>
+		<script type="text/javascript" src="js/v2.js"></script>
+	</body>
+</html>
