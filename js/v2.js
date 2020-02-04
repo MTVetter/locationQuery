@@ -7,15 +7,19 @@ require([
     "esri/views/MapView",
     "esri/Graphic",
     "esri/widgets/Expand",
-    "esri/core/watchUtils"
-], function(SketchViewModel, Map, FeatureLayer, GraphicsLayer, MapView, Graphic, Expand, watchUtils) {
+    "esri/core/watchUtils",
+    "esri/widgets/LayerList"
+], function(SketchViewModel, Map, FeatureLayer, GraphicsLayer, MapView, Graphic, Expand, watchUtils, LayerList) {
     
     /**********************************/
     /*Variables for the Graphics Layer*/
     /**********************************/
     const layer = new GraphicsLayer();
+    layer.listMode = "hide";
     const homeGraphicLayer = new GraphicsLayer();
+    homeGraphicLayer.listMode = "hide";
     const workGraphicLayer = new GraphicsLayer();
+    workGraphicLayer.listMode = "hide";
 
     /***************************************/
     /*Create Renderer for the Census Tracts*/
@@ -32,11 +36,31 @@ require([
         }
     };
 
+    var placeRenderer = {
+        type: "simple",
+        symbol: {
+            type: "simple-fill",
+            color: [0,0,0,0],
+            outline: {
+                color: [110, 110, 110, 0.7],
+                width: 1
+            }
+        }
+    };
+
     var hex = new FeatureLayer({
         url: 'https://gis.h-gac.com/arcgis/rest/services/Forecast/H3M/MapServer/0',
         title: '3 Sq. Mile Hexagons',
         renderer: hexRenderer,
         legendEnabled: false
+    });
+
+    var places = new FeatureLayer({
+        url: "https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_ACS_5Yr_Places/MapServer/0",
+        title: "Places",
+        renderer: placeRenderer,
+        legendEnabled: false,
+        visible: false
     });
     
     /**********************************/
@@ -44,7 +68,7 @@ require([
     /**********************************/
     const map = new Map({
         basemap: "streets-navigation-vector",
-        layers: [layer, hex, homeGraphicLayer, workGraphicLayer]
+        layers: [layer, places, hex, homeGraphicLayer, workGraphicLayer]
     });
 
     const view = new MapView({
@@ -277,6 +301,12 @@ require([
         watchUtils.whenTrueOnce(helpExpand, "expanded", function(){
             document.getElementById("helpInfo").style.display = "block";
         });
+
+        //Add a LayerList to the application
+        var layerList = new LayerList({
+            view: view
+        });
+        view.ui.add(layerList, "bottom-right");
     });
 
     /**************************************************/
