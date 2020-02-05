@@ -260,6 +260,15 @@ require([
         workGraphicLayer.removeAll();
     };
 
+    var helpInfo = document.getElementById("helpInfo");
+    var helpExpand = new Expand({
+        expandIconClass: "esri-icon-notice-round",
+        expandTooltip: "Application Help",
+        view: view,
+        content: helpInfo,
+        expanded: true
+    });
+
     /***********************************************/
     /*Create Expand widgets when the view is loaded*/
     /***********************************************/
@@ -269,14 +278,6 @@ require([
         });
         view.ui.add(homeWidget, "top-left");
         
-        var helpInfo = document.getElementById("helpInfo");
-        var helpExpand = new Expand({
-            expandIconClass: "esri-icon-notice-round",
-            expandTooltip: "Application Help",
-            view: view,
-            content: helpInfo,
-            expanded: true
-        });
         view.ui.add(helpExpand, "top-left");
 
         var drawPolys = document.getElementById("drawPolys");
@@ -346,4 +347,31 @@ require([
     function extendedLink(){
         window.open("https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home="+test[0].hexID+"&Workplace="+test[1].hexID);
     };
+
+    if (view.widthBreakpoint === "small" || view.widthBreakpoint === "xsmall"){
+        updateView(true);
+        helpExpand.expanded = false;
+    };
+
+    //Determine the user's screen size
+    view.watch("widthBreakpoint", function(breakpoint){
+        switch(breakpoint){
+            case "xsmall":
+            case "small":
+                updateView(true);
+                break;
+            case "medium":
+            case "large":
+            case "xlarge":
+                updateView(false);
+                break;
+            default:
+        }
+    });
+
+    function updateView(mobile){
+        if (mobile){
+            urlContent.style.width = "331px";
+        }
+    }
 });
