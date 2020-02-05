@@ -277,7 +277,6 @@ require([
             view: view
         });
         view.ui.add(homeWidget, "top-left");
-        
         view.ui.add(helpExpand, "top-left");
 
         var drawPolys = document.getElementById("drawPolys");
@@ -350,7 +349,6 @@ require([
 
     if (view.widthBreakpoint === "small" || view.widthBreakpoint === "xsmall"){
         updateView(true);
-        helpExpand.expanded = false;
     };
 
     //Determine the user's screen size
@@ -372,6 +370,9 @@ require([
     function updateView(mobile){
         if (mobile){
             urlContent.style.width = "331px";
+            helpExpand.expanded = false;
+        } else{
+            helpExpand.expanded = true;
         }
     }
 });
