@@ -62,13 +62,19 @@ require([
         legendEnabled: false,
         visible: false
     });
+
+    var mud = new FeatureLayer({
+        url: "https://gis.h-gac.com/arcgis/rest/services/LocationInformation/MUD_Relates/MapServer/0",
+        title: "MUD",
+        visible: false
+    });
     
     /**********************************/
     /*Create the map/view & add Layers*/
     /**********************************/
     const map = new Map({
         basemap: "streets-navigation-vector",
-        layers: [layer, places, hex, homeGraphicLayer, workGraphicLayer]
+        layers: [layer, places, mud, hex, homeGraphicLayer, workGraphicLayer]
     });
 
     const view = new MapView({
