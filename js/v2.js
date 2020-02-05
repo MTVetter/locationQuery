@@ -8,8 +8,9 @@ require([
     "esri/Graphic",
     "esri/widgets/Expand",
     "esri/core/watchUtils",
-    "esri/widgets/LayerList"
-], function(SketchViewModel, Map, FeatureLayer, GraphicsLayer, MapView, Graphic, Expand, watchUtils, LayerList) {
+    "esri/widgets/LayerList",
+    "esri/widgets/Home"
+], function(SketchViewModel, Map, FeatureLayer, GraphicsLayer, MapView, Graphic, Expand, watchUtils, LayerList, Home) {
     
     /**********************************/
     /*Variables for the Graphics Layer*/
@@ -258,6 +259,11 @@ require([
     /*Create Expand widgets when the view is loaded*/
     /***********************************************/
     view.when(function(){
+        var homeWidget = new Home({
+            view: view
+        });
+        view.ui.add(homeWidget, "top-left");
+        
         var helpInfo = document.getElementById("helpInfo");
         var helpExpand = new Expand({
             expandIconClass: "esri-icon-notice-round",
