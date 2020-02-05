@@ -59,7 +59,6 @@ require([
     var places = new FeatureLayer({
         url: "https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_ACS_5Yr_Places/MapServer/0",
         title: "Places",
-        renderer: placeRenderer,
         legendEnabled: false,
         visible: false
     });
@@ -149,7 +148,7 @@ require([
 
                     //Update the anchor element with a custom URL
                     var aTag = document.getElementById("homeTracts");
-                    aTag.setAttribute("href", "https://public.tableau.com/views/hex_3m_LEHD/CommutePattern?:display_count=y&&:showVizHome=no&Home=" + finalHex);
+                    aTag.setAttribute("href", "https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home=" + finalHex);
                     aTag.innerText = "View Home Commute Patterns";
                 })
         }
@@ -229,7 +228,7 @@ require([
                     updateFinalURL("Work", finalHex);
     
                     var aTag = document.getElementById("workTracts");
-                    aTag.setAttribute("href", "https://public.tableau.com/views/hex_3m_LEHD/CommutePattern?:display_count=y&&:showVizHome=no&Workplace=" + finalHex);
+                    aTag.setAttribute("href", "https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Workplace=" + finalHex);
                     aTag.innerText = "View Work Commute Patterns";
                 })
         }
@@ -339,6 +338,6 @@ require([
 
     //When a user clicks a button, open a new tab to with the new custom URL
     function extendedLink(){
-        window.open("https://public.tableau.com/views/hex_3m_LEHD/CommutePattern?:display_count=y&&:showVizHome=no&Home="+test[0].hexID+"&Workplace="+test[1].hexID);
+        window.open("https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home="+test[0].hexID+"&Workplace="+test[1].hexID);
     };
 });
