@@ -260,15 +260,6 @@ require([
         workGraphicLayer.removeAll();
     };
 
-    var helpInfo = document.getElementById("helpInfo");
-    var helpExpand = new Expand({
-        expandIconClass: "esri-icon-notice-round",
-        expandTooltip: "Application Help",
-        view: view,
-        content: helpInfo,
-        expanded: true
-    });
-
     /***********************************************/
     /*Create Expand widgets when the view is loaded*/
     /***********************************************/
@@ -277,6 +268,15 @@ require([
             view: view
         });
         view.ui.add(homeWidget, "top-left");
+
+        var helpInfo = document.getElementById("helpInfo");
+        var helpExpand = new Expand({
+            expandIconClass: "esri-icon-notice-round",
+            expandTooltip: "Application Help",
+            view: view,
+            content: helpInfo,
+            expanded: true
+        });
         view.ui.add(helpExpand, "top-left");
 
         var drawPolys = document.getElementById("drawPolys");
@@ -314,10 +314,15 @@ require([
         });
 
         //Add a LayerList to the application
-        var layerList = new LayerList({
-            view: view
+        var layerList = new Expand({
+            expandIconClass: "esri-icon-layer-list",
+            view: view,
+            content: new LayerList({
+                view: view
+            }),
+            expanded: false
         });
-        view.ui.add(layerList, "bottom-right");
+        view.ui.add(layerList, "top-left");
     });
 
     /**************************************************/
