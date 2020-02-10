@@ -6,6 +6,7 @@ html, body, #viewDiv{
 }
 #topbar {
     background: #fff;
+    padding-bottom: 1.25%;
 }
 #urlContent{
     padding: 15px;
@@ -37,17 +38,18 @@ html, body, #viewDiv{
     text-align: center;
     box-shadow: 0 0 1px rgba(0,0,0, 0.3);
 }
-#drawPolys{
+/* #drawPolys{
     padding: 15px;
     background-color: white;
     width: 300px;
     display: none;
-}
+} */
 #finalURL{
     font-size: 16px;
     background-color: transparent;
     height: 32px;
     text-align: center;
+    margin-top: 2%;
 }
 #finalURL:hover{
     cursor: pointer;
@@ -61,4 +63,24 @@ html, body, #viewDiv{
 #helpInfo h3{
     text-align: center;
     margin: 10px;
+}
+#drawPolys{
+    color: #000000;
+    position: absolute;
+    height: 275px;
+    z-index: 1;
+    width: 325px;
+    background-color: #fff;
+    top: 70%;
+    right: 0.5%;
+    padding-left: 10px;
+    padding-top: 10px;
+    border: 1px solid #000000;
+}
+#drawPolys span{
+    display: inline-block;
+    text-align: center;
+}
+#homeTracts, #workTracts{
+    text-decoration-line: none;
 }

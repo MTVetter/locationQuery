@@ -155,7 +155,7 @@ require([
                     //Update the anchor element with a custom URL
                     var aTag = document.getElementById("homeTracts");
                     aTag.setAttribute("href", "https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home=" + finalHex);
-                    aTag.innerText = "View Home Commute Patterns";
+                    aTag.innerText = "Home Commute Patterns";
                 })
         }
     });
@@ -235,7 +235,7 @@ require([
     
                     var aTag = document.getElementById("workTracts");
                     aTag.setAttribute("href", "https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Workplace=" + finalHex);
-                    aTag.innerText = "View Work Commute Patterns";
+                    aTag.innerText = "Work Commute Patterns";
                 })
         }
     });
@@ -268,50 +268,6 @@ require([
             view: view
         });
         view.ui.add(homeWidget, "top-left");
-
-        var helpInfo = document.getElementById("helpInfo");
-        var helpExpand = new Expand({
-            expandIconClass: "esri-icon-notice-round",
-            expandTooltip: "Application Help",
-            view: view,
-            content: helpInfo,
-            expanded: true
-        });
-        view.ui.add(helpExpand, "top-left");
-
-        var drawPolys = document.getElementById("drawPolys");
-        var drawExpand = new Expand({
-            expandIconClass: "esri-icon-edit",
-            expandTooltip: "Draw Custom Polygons",
-            view: view,
-            content: drawPolys,
-            expanded: false
-        });
-        view.ui.add(drawExpand, "top-left");
-
-        var urlContent = document.getElementById("urlContent");
-        var urlExpand = new Expand({
-            expandIconClass: "esri-icon-link",
-            expandTooltip: "Custom Commute Patterns",
-            view: view,
-            content: urlContent,
-            expanded: false
-        });
-        view.ui.add(urlExpand, "top-left");
-
-        //When the view is expanded, change the CSS display value
-        //This is so that the div isn't displayed while the application loads
-        watchUtils.whenTrueOnce(urlExpand, "expanded", function(){
-            document.getElementById("urlContent").style.display = "block";
-        });
-    
-        watchUtils.whenTrueOnce(drawExpand, "expanded", function(){
-            document.getElementById("drawPolys").style.display = "block";
-        });
-
-        watchUtils.whenTrueOnce(helpExpand, "expanded", function(){
-            document.getElementById("helpInfo").style.display = "block";
-        });
 
         //Add a LayerList to the application
         var layerList = new Expand({
