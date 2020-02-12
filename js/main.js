@@ -9,8 +9,9 @@ require([
   "esri/widgets/Expand",
   "esri/core/watchUtils",
   "esri/widgets/LayerList",
-  "esri/widgets/Home"
-], function(SketchViewModel, Map, FeatureLayer, GraphicsLayer, MapView, Graphic, Expand, watchUtils, LayerList, Home) {
+  "esri/widgets/Home",
+  "esri/geometry/geometryEngine"
+], function(SketchViewModel, Map, FeatureLayer, GraphicsLayer, MapView, Graphic, Expand, watchUtils, LayerList, Home, geometryEngine) {
   
   /**********************************/
   /*Variables for the Graphics Layer*/
@@ -100,8 +101,39 @@ require([
   });
 
   sketchHome.on("create", function(event){
+      //When the sketch state is considered active and the geometry is a circle
+      if (event.state === "active" && event.tool === "circle"){
+          //Remove all the graphics from the map
+          view.graphics.removeAll();
+          //Get the geodesic length to display the radius of the circle
+          var lengText = geometryEngine.geodesicLength(event.graphic.geometry, "miles").toFixed(2) + " miles";
+          //Create a graphic based on the sketch graphic
+          var circleGraphic = new Graphic({
+              geometry: event.graphic.geometry
+          });
+          //Create the text symbol for the graphic
+          circleGraphic.symbol = {
+              type: "text",
+              color: "#000",
+              text: lengText,
+              font: {
+                  family: "Merriweather",
+                  size: 16,
+                  weight: "lighter"
+              }
+          };
+
+          //Set the text attribute of the graphic
+          circleGraphic.setAttribute(circleGraphic.symbol.text, lengText);
+          //Add the graphic to the map to display the radius value
+          view.graphics.add(circleGraphic);
+      }
+
       //When the sketch state is considered complete
       if (event.state === "complete"){
+          //Remove the radius value once the drawing has finished
+          view.graphics.removeAll();
+          
           //Query the Hexagons based on the drawn geometry
           var query = hex.createQuery();
           query.geometry = event.graphic.geometry;
