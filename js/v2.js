@@ -23,7 +23,7 @@ require([
     workGraphicLayer.listMode = "hide";
 
     /***************************************/
-    /*Create Renderer for the Census Tracts*/
+    /*Create Renderer for theHexagons*/
     /***************************************/
     var hexRenderer = {
         type: 'simple',
@@ -84,7 +84,7 @@ require([
         zoom: 8
     });
 
-    //JavaScript Object that holds the final Census Tract
+    //JavaScript Object that holds the final Hexagon
     //information for both the Home and Work polygons
     var test = [
         {type: "Home", hexID:0123},
@@ -102,7 +102,7 @@ require([
     sketchHome.on("create", function(event){
         //When the sketch state is considered complete
         if (event.state === "complete"){
-            //Query the Census Tracts based on the drawn geometry
+            //Query the Hexagons based on the drawn geometry
             var query = hex.createQuery();
             query.geometry = event.graphic.geometry;
             query.outFields = ["ID"];
@@ -110,7 +110,7 @@ require([
             var hexID = "";
             hex.queryFeatures(query)
                 .then(function(response){
-                    //Loop through all the Census Tracts and
+                    //Loop through all the Hexagons and
                     //Add the Hex number and a comma to the string
                     for (var i = 0; i < response.features.length; i++){
                         hexID += response.features[i].attributes.ID + ",";
@@ -307,7 +307,7 @@ require([
         //Loop through the objects
         for (var i = 0; i < test.length; i++){
             //If the object matches the type
-            //Update the Tract numbers with the new Tract numbers
+            //Update the Hexagon numbers with the new Hexagon numbers
             if (test[i].type === type){
                 test[i].hexID = hexID;
                 break;
