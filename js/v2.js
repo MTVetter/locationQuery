@@ -146,6 +146,7 @@ require([
 
                     //Add newly created graphic to the home graphic layer
                     //Delete the extra graphic layer from the map
+                    homeGraphicLayer.removeAll();
                     homeGraphicLayer.add(newGraphic);
                     layer.removeAll();
 
@@ -156,6 +157,15 @@ require([
                     var aTag = document.getElementById("homeTracts");
                     aTag.setAttribute("href", "https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home=" + finalHex);
                     aTag.innerText = "Home Commute Patterns";
+
+                    //Check to see if the work polygon has been updated
+                    //If the work attributes are different from the default
+                    //Create the Home to Work Commute Pattern URL
+                    if (test[1].hexID !== 4567){
+                        var finalURLTag = document.getElementById("homeToWork");
+                        finalURLTag.setAttribute("href", "https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home="+test[0].hexID+"&Workplace="+test[1].hexID);
+                        finalURLTag.innerText = "Home to Work Commute Patterns";
+                    }
                 })
         }
     });
@@ -181,6 +191,8 @@ require([
     document.getElementById("homeResetBtn").onclick = function(){
         layer.removeAll();
         homeGraphicLayer.removeAll();
+        document.getElementById("homeTracts").removeAttribute("href");
+        document.getElementById("homeTracts").innerText = "";
     };
 
     /*******************************/
@@ -228,6 +240,7 @@ require([
                         symbol: polySymbol
                     });
 
+                    workGraphicLayer.removeAll();
                     workGraphicLayer.add(newGraphic);
                     layer.removeAll();
 
@@ -236,6 +249,12 @@ require([
                     var aTag = document.getElementById("workTracts");
                     aTag.setAttribute("href", "https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Workplace=" + finalHex);
                     aTag.innerText = "Work Commute Patterns";
+
+                    if (test[0].hexID !== 0123){
+                        var finalURLTag = document.getElementById("homeToWork");
+                        finalURLTag.setAttribute("href", "https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home="+test[0].hexID+"&Workplace="+test[1].hexID);
+                        finalURLTag.innerText = "Home to Work Commute Patterns";
+                    }
                 })
         }
     });
@@ -258,6 +277,8 @@ require([
     document.getElementById("workResetBtn").onclick = function(){
         layer.removeAll();
         workGraphicLayer.removeAll();
+        document.getElementById("workTracts").removeAttribute("href");
+        document.getElementById("workTracts").innerText = "";
     };
 
     /***********************************************/
@@ -281,14 +302,6 @@ require([
         view.ui.add(layerList, "top-left");
     });
 
-    /**************************************************/
-    /*Create actions when the Select button is clicked*/
-    /**************************************************/
-    var linkButton = document.getElementById("finalURL");
-    linkButton.onclick = function(){
-        extendedLink();
-    };
-
     //Function to update the final URL
     function updateFinalURL(type, hexID){
         //Loop through the objects
@@ -301,11 +314,6 @@ require([
             }
         }
         
-    };
-
-    //When a user clicks a button, open a new tab to with the new custom URL
-    function extendedLink(){
-        window.open("https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home="+test[0].hexID+"&Workplace="+test[1].hexID);
     };
 
     if (view.widthBreakpoint === "small" || view.widthBreakpoint === "xsmall"){
