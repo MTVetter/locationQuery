@@ -20,13 +20,35 @@
 			
 		<!--you can also use this space for internal scripts or stylesheets;
 		place these within <script> or <style> tags-->
-		<div id="wrapper">
-			<div id="viewDiv">
-				<div id="line-button" class="esri-widget esri-widget--button esri-interactive" title="Draw polyline">
-					<span class="esri-icon-edit"></span>
-				</div>
+		<div id="drawPolys">
+			<span>Click on a geometry type to draw a custom home/work polygon.</span><br/><br/>
+			<span>Draw Home Polygon:</span><br/>
+			<div id="topbar">
+				<button class="action-button esri-icon-polygon" id="homePolygonButton" type="button"
+					title="Draw polygon"></button>
+				<button class="action-button esri-icon-checkbox-unchecked" id="homeRectangleButton"
+					type="button" title="Draw rectangle"></button>
+				<button class="action-button esri-icon-radio-unchecked" id="homeCircleButton"
+					type="button" title="Draw circle"></button>
+				<button class="action-button esri-icon-trash" id="homeResetBtn" type="button"
+					title="Clear drawings"></button>
 			</div>
+			<span id="links">Home Polygon URL: </span><a target="_blank" id="homeTracts"></a><br/><br/>
+			<span>Draw Work Polygon:</span><br/>
+			<div id="topbar">
+				<button class="action-button esri-icon-polygon" id="workPolygonButton" type="button"
+					title="Draw polygon"></button>
+				<button class="action-button esri-icon-checkbox-unchecked" id="workRectangleButton"
+					type="button" title="Draw rectangle"></button>
+				<button class="action-button esri-icon-radio-unchecked" id="workCircleButton"
+					type="button" title="Draw circle"></button>
+				<button class="action-button esri-icon-trash" id="workResetBtn" type="button"
+					title="Clear drawings"></button>
+			</div>
+			<span id="links">Work Polygon URL: </span><a target="_blank" id="workTracts"></a><br/><br/>
+			<span id="finalLink">Home to Work URL: </span><a target="_blank" id="homeToWork"></a>
 		</div>
+		<div id="viewDiv"></div>
 		<!--put your external script links here-->
 		<script type="text/javascript" src="js/jquery-3.3.1.js"></script>
 		<script type="text/javascript" src="js/jquery-ui.js"></script>
