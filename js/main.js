@@ -115,11 +115,13 @@ require([
           circleGraphic.symbol = {
               type: "text",
               color: "#000",
+              haloColor: "#fff",
+              haloSize: 2,
               text: lengText,
               font: {
-                  family: "Merriweather",
-                  size: 16,
-                  weight: "lighter"
+                  family: "Montserrat",
+                  size: 14,
+                  weight: "normal"
               }
           };
 
@@ -150,7 +152,6 @@ require([
 
                   //Once all the Tract number are stored, remove the trailing comma
                   var finalHex = hexID.slice(0, hexID.length - 1);
-                  console.log(finalHex);
 
                   //Create attributes for the graphic
                   var hexAtts = {
@@ -161,10 +162,10 @@ require([
                   //Create a renderer for the graphic
                   var polySymbol = {
                       type: "simple-fill",
-                      color: [250, 224, 60, 0.65],
+                      color: [255,0,0,0.4],
                       style: "solid",
                       outline: {
-                          color: [250, 224, 60, 1],
+                          color: [255,0,0,1],
                           width: 1.5
                       }
                   };
@@ -236,7 +237,37 @@ require([
   });
 
   sketchWork.on("create", function(event){
+      if (event.state === "active" && event.tool === "circle"){
+          //Remove all the graphics from the map
+          view.graphics.removeAll();
+          //Get the geodesic length to display the radius of the circle
+          var lengText = geometryEngine.geodesicLength(event.graphic.geometry, "miles").toFixed(2) + " miles";
+          //Create a graphic based on the sketch graphic
+          var circleGraphic = new Graphic({
+              geometry: event.graphic.geometry
+          });
+          //Create the text symbol for the graphic
+          circleGraphic.symbol = {
+              type: "text",
+              color: "#000",
+              haloColor: "#fff",
+              haloSize: 2,
+              text: lengText,
+              font: {
+                  family: "Montserrat",
+                  size: 14,
+                  weight: "normal"
+              }
+          };
+
+          //Set the text attribute of the graphic
+          circleGraphic.setAttribute(circleGraphic.symbol.text, lengText);
+          //Add the graphic to the map to display the radius value
+          view.graphics.add(circleGraphic);
+      }
+
       if (event.state === "complete"){
+          view.graphics.removeAll();
           var query = hex.createQuery();
           query.geometry = event.graphic.geometry;
           query.outFields = ["ID"];
@@ -249,7 +280,6 @@ require([
                   }
 
                   var finalHex = hexID.slice(0, hexID.length - 1);
-                  console.log(finalHex);
 
                   var tractAtts = {
                       "censusTracts": finalHex,
@@ -258,10 +288,10 @@ require([
 
                   var polySymbol = {
                       type: "simple-fill",
-                      color: [111, 159, 216, 0.65],
+                      color: [17, 142, 170, 0.4],
                       style: "solid",
                       outline: {
-                          color: [111, 159, 216, 1],
+                          color: [17, 142, 170, 1],
                           width: 2
                       }
                   };
