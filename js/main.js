@@ -88,8 +88,8 @@ require([
   //JavaScript Object that holds the final Hexagon
   //information for both the Home and Work polygons
   var test = [
-      {type: "Home", hexID:0123},
-      {type: "Work", hexID:4567}
+      {type: "Home", hexID:"0123"},
+      {type: "Work", hexID:"4567"}
   ];
 
   /******************************/
@@ -106,7 +106,7 @@ require([
           //Remove all the graphics from the map
           view.graphics.removeAll();
           //Get the geodesic length to display the radius of the circle
-          var lengText = geometryEngine.geodesicLength(event.graphic.geometry, "miles").toFixed(2) + " miles";
+          var lengText = (geometryEngine.geodesicLength(event.graphic.geometry, "miles")/6.2).toFixed(2) + " miles";
           //Create a graphic based on the sketch graphic
           var circleGraphic = new Graphic({
               geometry: event.graphic.geometry
@@ -222,10 +222,23 @@ require([
   };
 
   document.getElementById("homeResetBtn").onclick = function(){
+      //Remove all graphics from the map
       layer.removeAll();
       homeGraphicLayer.removeAll();
+
+      //Reset the hexID for the home polygon
+      test[0].hexID = "0123";
+
+      //Remove the URL that contains the home hexID
       document.getElementById("homeTracts").removeAttribute("href");
       document.getElementById("homeTracts").innerText = "";
+
+      //If the home to work URL is visible
+      //Remove it since the user is changing the home polygon
+      if (document.getElementById("homeToWork").innerText){
+          document.getElementById("homeToWork").removeAttribute("href");
+          document.getElementById("homeToWork").innerText = "";
+      };
   };
 
   /*******************************/
@@ -241,7 +254,7 @@ require([
           //Remove all the graphics from the map
           view.graphics.removeAll();
           //Get the geodesic length to display the radius of the circle
-          var lengText = geometryEngine.geodesicLength(event.graphic.geometry, "miles").toFixed(2) + " miles";
+          var lengText = (geometryEngine.geodesicLength(event.graphic.geometry, "miles")/6.2).toFixed(2) + " miles";
           //Create a graphic based on the sketch graphic
           var circleGraphic = new Graphic({
               geometry: event.graphic.geometry
@@ -312,7 +325,7 @@ require([
                   aTag.setAttribute("href", "https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Workplace=" + finalHex);
                   aTag.innerText = "Work Commute Patterns";
 
-                  if (test[0].hexID !== 0123){
+                  if (test[0].hexID !== "0123"){
                       var finalURLTag = document.getElementById("homeToWork");
                       finalURLTag.setAttribute("href", "https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home="+test[0].hexID+"&Workplace="+test[1].hexID);
                       finalURLTag.innerText = "Home to Work Commute Patterns";
@@ -337,10 +350,24 @@ require([
   };
 
   document.getElementById("workResetBtn").onclick = function(){
+      //Remove all graphics from map
       layer.removeAll();
       workGraphicLayer.removeAll();
+
+      //Reset the hexID for the work polygon
+      test[1].hexID = "4567";
+
+      //Remove the URL that contains the work hexID
       document.getElementById("workTracts").removeAttribute("href");
       document.getElementById("workTracts").innerText = "";
+
+      //If the home to work URL is visible
+      //Remove it since the user is changing the work polygon
+      if (document.getElementById("homeToWork").innerText){
+          document.getElementById("homeToWork").removeAttribute("href");
+          document.getElementById("homeToWork").innerText = "";
+      };
+
   };
 
   /***********************************************/
