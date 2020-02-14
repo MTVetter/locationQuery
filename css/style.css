@@ -68,3 +68,19 @@ html, body, #viewDiv{
 #homeTracts, #workTracts, #homeToWork{
     text-decoration-line: none;
 }
+
+@media screen and (max-width: 415px){
+    #drawPolys{
+        top: 65%;
+        right: 3%;
+        padding-top: unset;
+        height: 220px;
+        border-radius: 15px;
+    }
+    #directions{
+        display: none !important;
+    }
+    #breaks{
+        display: none;
+    }
+}
