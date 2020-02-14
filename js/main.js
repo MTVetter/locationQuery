@@ -194,7 +194,7 @@ require([
                   //Check to see if the work polygon has been updated
                   //If the work attributes are different from the default
                   //Create the Home to Work Commute Pattern URL
-                  if (test[1].hexID !== 4567){
+                  if (test[1].hexID !== "4567"){
                       var finalURLTag = document.getElementById("homeToWork");
                       finalURLTag.setAttribute("href", "https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home="+test[0].hexID+"&Workplace="+test[1].hexID);
                       finalURLTag.innerText = "Home to Work Commute Patterns";
@@ -404,34 +404,5 @@ require([
       }
       
   };
-
-  if (view.widthBreakpoint === "small" || view.widthBreakpoint === "xsmall"){
-      updateView(true);
-  };
-
-  //Determine the user's screen size
-  view.watch("widthBreakpoint", function(breakpoint){
-      switch(breakpoint){
-          case "xsmall":
-          case "small":
-              updateView(true);
-              break;
-          case "medium":
-          case "large":
-          case "xlarge":
-              updateView(false);
-              break;
-          default:
-      }
-  });
-
-  function updateView(mobile){
-      if (mobile){
-          urlContent.style.width = "331px";
-          helpExpand.expanded = false;
-      } else{
-          helpExpand.expanded = true;
-      }
-  }
 });
 
