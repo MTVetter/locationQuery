@@ -24,7 +24,7 @@ require([
   workGraphicLayer.listMode = "hide";
 
   /***************************************/
-  /*Create Renderer for theHexagons*/
+  /*Create Renderer for the Hexagons *****/
   /***************************************/
   var hexRenderer = {
       type: 'simple',
@@ -38,16 +38,29 @@ require([
       }
   };
 
-  var placeRenderer = {
+  var countyRenderer = {
       type: "simple",
       symbol: {
           type: "simple-fill",
           color: [0,0,0,0],
           outline: {
-              color: [110, 110, 110, 0.7],
-              width: 1
+              color: [50,50,50, 0.5],
+              width: 0.75
           }
       }
+  };
+
+  /***************************************/
+  /*** Create Popup for the Counties *****/
+  /***************************************/
+  var countyPopup = {
+      title: "{Name}",
+      expressionInfos: [{
+          name: "homeURL",
+          title: "URL for Workers at Home",
+          expression: ""
+      }],
+      content: "Below are two URLs that display the workers from {Name}.<br><br/>Workers living in {NAME}: <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home={NAME}' target='_blank'>Testing</a><br><br/>Workers working in {NAME}: <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Workplace={NAME}' target='_blank'>Testing Workplace</a>"
   };
 
   var hex = new FeatureLayer({
@@ -69,13 +82,23 @@ require([
       title: "MUD",
       visible: false
   });
+
+  var counties = new FeatureLayer({
+      url: "https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_ACS_5Yr_Counties/MapServer/0",
+      title: "Counties",
+      definitionExpression: "Name IN('Waller County', 'Fort Bend County', 'Brazoria County', 'Montgomery County', 'Harris County', 'Galveston County', 'Liberty County', 'Chambers County')",
+      visible: false,
+      renderer: countyRenderer,
+      outFields: ["Name"],
+      popupTemplate: countyPopup
+  });
   
   /**********************************/
   /*Create the map/view & add Layers*/
   /**********************************/
   const map = new Map({
       basemap: "streets-navigation-vector",
-      layers: [layer, places, mud, hex, homeGraphicLayer, workGraphicLayer]
+      layers: [layer, counties, places, mud, hex, homeGraphicLayer, workGraphicLayer]
   });
 
   const view = new MapView({
