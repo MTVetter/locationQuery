@@ -10,8 +10,9 @@ require([
   "esri/core/watchUtils",
   "esri/widgets/LayerList",
   "esri/widgets/Home",
-  "esri/geometry/geometryEngine"
-], function(SketchViewModel, Map, FeatureLayer, GraphicsLayer, MapView, Graphic, Expand, watchUtils, LayerList, Home, geometryEngine) {
+  "esri/geometry/geometryEngine",
+  "esri/renderers/UniqueValueRenderer"
+], function(SketchViewModel, Map, FeatureLayer, GraphicsLayer, MapView, Graphic, Expand, watchUtils, LayerList, Home, geometryEngine, UniqueValueRenderer) {
   
   /**********************************/
   /*Variables for the Graphics Layer*/
@@ -50,18 +51,129 @@ require([
       }
   };
 
+  var cdRenderer = {
+      type: "unique-value",
+      field: "CD115FP",
+      uniqueValueInfos: [{
+          value: "02",
+          symbol: {
+              type: "simple-fill",
+              color: [191,151,39, 0.5],
+              outline: {
+                  width: 0.2,
+                  color: "black"
+              }
+          }
+      },{
+          value: "07",
+          symbol: {
+              type: "simple-fill",
+              color: [96,113,0, 0.5],
+              outline: {
+                  width: 0.2,
+                  color: "black"
+              }
+          }
+      },{
+          value: "08",
+          symbol: {
+              type: "simple-fill",
+              color: [0,115,76, 0.5],
+              outline: {
+                  width: 0.2,
+                  color: "black"
+              }
+          }
+      },{
+          value: "09",
+          symbol: {
+              type: "simple-fill",
+              color: [112,68,137, 0.5],
+              outline: {
+                  width: 0.2,
+                  color: "black"
+              }
+          }
+      },{
+          value: "10",
+          symbol: {
+              type: "simple-fill",
+              color: [1,172,202, 0.5],
+              outline: {
+                  width: 0.2,
+                  color: "black"
+              }
+          }
+      },{
+          value: "14",
+          symbol: {
+              type: "simple-fill",
+              color: [2,78,118, 0.5],
+              outline: {
+                  width: 0.2,
+                  color: "black"
+              }
+          }
+      },{
+        value: "18",
+        symbol: {
+            type: "simple-fill",
+            color: [240,145,0, 0.5],
+            outline: {
+                width: 0.2,
+                color: "black"
+            }
+        }
+      },{
+        value: "22",
+        symbol: {
+            type: "simple-fill",
+            color: [234,49,31, 0.5],
+            outline: {
+                width: 0.2,
+                color: "black"
+            }
+        }
+      },{
+        value: "29",
+        symbol: {
+            type: "simple-fill",
+            color: [117,112,179, 0.5],
+            outline: {
+                width: 0.2,
+                color: "black"
+            }
+        }
+      },{
+        value: "36",
+        symbol: {
+            type: "simple-fill",
+            color: [128,128,128, 0.5],
+            outline: {
+                width: 0.2,
+                color: "black"
+            }
+        }
+      }]
+  }
+
   /***************************************/
   /*** Create Popup for the Counties *****/
   /***************************************/
   var countyPopup = {
       title: "{Name}",
-      expressionInfos: [{
-          name: "homeURL",
-          title: "URL for Workers at Home",
-          expression: ""
-      }],
-      content: "Below are two URLs that display the workers from {Name}.<br><br/>Workers living in {NAME}: <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Home={NAME}' target='_blank'>Testing</a><br><br/>Workers working in {NAME}: <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Workplace={NAME}' target='_blank'>Testing Workplace</a>"
+      content: "Below are two URLs that display the workers from {Name}.<br><br/>Workers living in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&CO_GEOID_h={FIPS}' target='_blank'>{NAME}</a><br><br/>Workers working in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&CO_GEOID_w={FIPS}' target='_blank'>{NAME}</a>"
   };
+
+  var placePopup = {
+      title: "{Name}",
+      content: "Below are two URLs that display the workers from {Name}.<br><br/>Workers living in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Pl_GEOID_h={FIPS}' target='_blank'>{Name}</a><br><br/>Workers working in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&Pl_GEOID_w={FIPS}' target='_blank'>{Name}</a>"
+  };
+
+  var congDistrictPopup = {
+      title: "{CD115FP}",
+      content: "Below are two URLs that display the workers from Congressional District {CD115FP}.<br><br/>Workers living in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&CD_ID_h={CD115FP}' target='_blank'>Congressional District {CD115FP}</a><br><br/>Workers working in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&CD_ID_w={CD115FP}' target='_blank'>Congressional District {CD115FP}</a>"
+  }
 
   var hex = new FeatureLayer({
       url: 'https://gis.h-gac.com/arcgis/rest/services/Forecast/H3M/MapServer/0',
@@ -73,8 +185,10 @@ require([
   var places = new FeatureLayer({
       url: "https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_ACS_5Yr_Places/MapServer/0",
       title: "Places",
+      definitionExpression: "FIPS IN('4840588', '4803264', '4827420', '4846500', '4836092', '4815652', '4818260', '4802272', '4805288', '4809388', '4833980', '4816432', '4869548', '4860164', '4871384', '4871492', '4834220', '4841116', '4841980', '4865726', '4865345', '4877746', '4849128', '4873316', '4876948', '4856000', '4803072', '4832240', '4806128', '4806200', '4872392', '4833200', '4856108', '4857615', '4859336', '4838776', '4872989', '4820344', '4810090', '4865372', '4866392', '4803144', '4817336', '4849068', '4853824', '4869830', '4871960', '4877956', '4869908', '4835348', '4856156', '4863044', '4867400', '4827996', '4833068', '4835480', '4818476', '4849380', '4869020', '4861892', '4863284', '4870808', '4815436', '4819432', '4846056', '4803708', '4820140', '4879408', '4869932', '4842568', '4851984', '4848804', '4856348', '4838476', '4876228', '4810636', '4828068', '4827648', '4841440', '4835000', '4807300', '4819624', '4806272', '4827876', '4838848', '4850628', '4867964', '4872740', '4801696', '4804462', '4805180', '4805696', '4808240', '4809250', '4814236', '4814929', '4815628', '4817756', '4818134', '4827540', '4833836', '4835324', '4848772', '4856482', '4857596', '4858850', '4863332', '4865564', '4867766', '4869596', '4870520', '4872656','4879192', '4879792')",
       legendEnabled: false,
-      visible: false
+      visible: false,
+      popupTemplate: placePopup
   });
 
   var mud = new FeatureLayer({
@@ -89,8 +203,18 @@ require([
       definitionExpression: "Name IN('Waller County', 'Fort Bend County', 'Brazoria County', 'Montgomery County', 'Harris County', 'Galveston County', 'Liberty County', 'Chambers County')",
       visible: false,
       renderer: countyRenderer,
-      outFields: ["Name"],
+      outFields: ["Name", "FIPS"],
       popupTemplate: countyPopup
+  });
+
+  var congDistricts = new FeatureLayer({
+      url: "https://gis.h-gac.com/arcgis/rest/services/Census_ACS/Census_Congressional_District_2017/MapServer/0",
+      title: "Congressional Districts",
+      definitionExpression: "CD115FP NOT IN('27')",
+      visible: false,
+      outFields: ["CD115FP"],
+      renderer: cdRenderer,
+      popupTemplate: congDistrictPopup
   });
   
   /**********************************/
@@ -98,7 +222,7 @@ require([
   /**********************************/
   const map = new Map({
       basemap: "streets-navigation-vector",
-      layers: [layer, counties, places, mud, hex, homeGraphicLayer, workGraphicLayer]
+      layers: [layer, counties, congDistricts, places, mud, hex, homeGraphicLayer, workGraphicLayer]
   });
 
   const view = new MapView({
