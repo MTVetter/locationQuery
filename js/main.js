@@ -171,7 +171,7 @@ require([
   };
 
   var congDistrictPopup = {
-      title: "{CD115FP}",
+      title: "Congressional District {CD115FP}",
       content: "Below are two URLs that display the workers from Congressional District {CD115FP}.<br><br/>Workers living in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&CD_ID_h={CD115FP}' target='_blank'>Congressional District {CD115FP}</a><br><br/>Workers working in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&CD_ID_w={CD115FP}' target='_blank'>Congressional District {CD115FP}</a>"
   }
 
