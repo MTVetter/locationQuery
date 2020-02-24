@@ -51,11 +51,11 @@ html, body, #viewDiv{
 #drawPolys{
     color: #000000;
     position: absolute;
-    height: 275px;
+    height: 350px;
     z-index: 1;
     width: 325px;
     background-color: #fff;
-    top: 70%;
+    top: 60%;
     right: 0.5%;
     padding-left: 10px;
     padding-top: 10px;
@@ -68,6 +68,10 @@ html, body, #viewDiv{
 #homeTracts, #workTracts, #homeToWork{
     text-decoration-line: none;
 }
+#drawPolys ol{
+    margin-top: auto;
+    margin-bottom: 10px;
+}
 
 @media screen and (max-width: 415px){
     #drawPolys{
@@ -77,10 +81,7 @@ html, body, #viewDiv{
         height: 220px;
         border-radius: 15px;
     }
-    #directions{
-        display: none !important;
-    }
-    #breaks{
+    #drawPolys ol{
         display: none;
     }
 }
