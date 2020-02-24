@@ -172,7 +172,7 @@ require([
 
   var congDistrictPopup = {
       title: "Congressional District {CD115FP}",
-      content: "Below are two URLs that display the workers from Congressional District {CD115FP}.<br><br/>Workers living in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&CD_ID_h={CD115FP}' target='_blank'>Congressional District {CD115FP}</a><br><br/>Workers working in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&CD_ID_w={CD115FP}' target='_blank'>Congressional District {CD115FP}</a>"
+      content: "Below are two URLs that display the workers from Congressional District {CD115FP}. The Congressional Districts are based on H-GAC's 8 county boundary.<br><br/>Workers living in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&CD_ID_h={CD115FP}' target='_blank'>Congressional District {CD115FP}</a><br><br/>Workers working in <a href='https://public.tableau.com/views/Commuting_Patterns_Query/Summary?:display_count=y&:showShareOptions=true&:display_count=no&:showVizHome=no&CD_ID_w={CD115FP}' target='_blank'>Congressional District {CD115FP}</a>"
   }
 
   var hex = new FeatureLayer({
@@ -189,12 +189,6 @@ require([
       legendEnabled: false,
       visible: false,
       popupTemplate: placePopup
-  });
-
-  var mud = new FeatureLayer({
-      url: "https://gis.h-gac.com/arcgis/rest/services/LocationInformation/MUD_Relates/MapServer/0",
-      title: "MUD",
-      visible: false
   });
 
   var counties = new FeatureLayer({
@@ -222,7 +216,7 @@ require([
   /**********************************/
   const map = new Map({
       basemap: "streets-navigation-vector",
-      layers: [layer, counties, congDistricts, places, mud, hex, homeGraphicLayer, workGraphicLayer]
+      layers: [layer, counties, congDistricts, places, hex, homeGraphicLayer, workGraphicLayer]
   });
 
   const view = new MapView({
